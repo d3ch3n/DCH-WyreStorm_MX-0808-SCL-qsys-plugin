@@ -116,14 +116,14 @@ for i = 1, 6 do
     ControlType = "Button",
     ButtonType = "Momentary",
     UserPin = true,
-    PinStyle = "Output"
+    PinStyle = "Both"
   })
   table.insert(ctrls, {
     Name = "RestorePreset"..i,
     ControlType = "Button",
     ButtonType = "Momentary",
     UserPin = true,
-    PinStyle = "Output"
+    PinStyle = "Both"
   })
 end
 
