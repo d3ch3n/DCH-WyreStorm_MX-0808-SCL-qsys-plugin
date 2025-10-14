@@ -67,6 +67,7 @@ end
     PinStyle = "none"
   })
 
+  --[[
   -- Audio Follow Video (radio)
 table.insert(ctrls, {
   Name = "AudioFollowVideo",
@@ -107,7 +108,7 @@ table.insert(ctrls, {
   PinStyle = "Input"
 })
 
-
+]]
 
 -----Presets
 for i = 1, 6 do

@@ -8,7 +8,7 @@ for outp = 1, 8 do
     Controls["Route_"..inp.."_"..outp].EventHandler = function ()
       if DebugFunction then print("Route EventHandler called") end
       if Sw_Mode_AFV or Sw_Video then
-        Send("SET SW in"..inp.." out" .. outp)
+        Send("SET SW hdmiin"..inp.." out" .. outp)
       elseif Sw_Audio then
         Send("SET AUDIOSW IN"..inp.. " OUT" ..outp)
       end
@@ -16,7 +16,7 @@ for outp = 1, 8 do
   end
 end
 
-
+--[[
 Controls["AudioFollowVideo"].EventHandler = function()
   if DebugFunction then print("Audio Follow Video called") end
   Send ("SET AUDIOSW_M follow")
@@ -44,8 +44,9 @@ Controls["SwAudio"].EventHandler = function()
     Controls["SwVideo"].Boolean = Sw_Video
     Controls["SwAudio"].Boolean = Sw_Audio
 end
+]]
 
-for i = 1, 6 do
+for i = 1, 3 do
   Controls["SavePreset"..i].EventHandler = function()
     if DebugFunction then print("Saving Preset "..i) end
     Send("SAVE PRESET " .. i)
@@ -61,24 +62,24 @@ end
 for outp=1, 8 do
     Controls["CEC_PWR_OUT"..outp].EventHandler = function(ctrl)
         if ctrl.Boolean then
-            if DebugFunction then print("SET CEC_PWR out"..outp.." on") end
+            if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
             Send("SET CEC_PWR out"..outp.." on")
         else
-            if DebugFunction then print("SET CEC_PWR out"..outp.." off") end
+            if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
             Send("SET CEC_PWR out"..outp.." off")
         end
     end
 
     -- Power ON
     Controls["CEC_PWR_ON_OUT"..outp].EventHandler = function()
-        if DebugFunction then print("SET CEC_PWR out"..outp.." on") end
+        if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
         Send("SET CEC_PWR out"..outp.." on")
         Controls["CEC_PWR_OUT"..outp].Boolean = true
     end
 
     -- Power OFF
     Controls["CEC_PWR_OFF_OUT"..outp].EventHandler = function()
-        if DebugFunction then print("SET CEC_PWR out"..outp.." off") end
+        if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
         Send("SET CEC_PWR out"..outp.." off")
         Controls["CEC_PWR_OUT"..outp].Boolean = false
     end
@@ -86,10 +87,10 @@ for outp=1, 8 do
     -- AutoCEC Power Toggle
     Controls["AUTOCEC_OUT"..outp].EventHandler = function(ctrl)
         if ctrl.Boolean then
-            if DebugFunction then print("SET AUTOCEC_FN out"..outp.." on") end
+            if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." on") end
             Send("SET AUTOCEC_FN out"..outp.." on")
         else
-            if DebugFunction then print("SET AUTOCEC_FN out"..outp.." off") end
+            if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." off") end
             Send("SET AUTOCEC_FN out"..outp.." off")
         end
     end

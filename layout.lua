@@ -73,7 +73,7 @@ elseif CurrentPage == "Switch" then
     end
 
 
-
+    --[[
     layout["AudioFollowVideo"] = {
       PrettyName = "AudioFollowVideo",
       Type = "Button",
@@ -115,6 +115,7 @@ elseif CurrentPage == "Switch" then
       Legend = "Audio",
       FontSize = 9,
     }
+      ]]
 
 -- Grade de botões (8 Saídas x 8 Entradas)
     for outp = 1, 8 do
@@ -166,7 +167,7 @@ elseif CurrentPage == "Switch" then
   -- TBD
 elseif CurrentPage == "Presets" then
   
-  for i = 1, 6 do
+  for i = 1, 3 do
   layout["SavePreset"..i] = {
     PrettyName = "Save Preset "..i,
     Type = "Button",

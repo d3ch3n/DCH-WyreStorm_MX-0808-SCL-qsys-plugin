@@ -53,6 +53,7 @@ end
     if IsConnected() then
       if DebugTx then print("Tx: " .. cmd) end
       TCP:Write(cmd .. "\x0d\x0a")
+      print(cmd .. "\x0d\x0a")
     else
       print("Error - Disconnected; unable to send " .. cmd)
     end
@@ -139,7 +140,15 @@ end
     if DebugFunction then print("PollDevice() called") end
     --add polling commands here
     Send("GET MP all")
-    Send("GET AUDIOSW_M")
+    Send("GET AUTOCEC_FN hdmiout1")
+    Send("GET AUTOCEC_FN hdmiout2")
+    Send("GET AUTOCEC_FN hdmiout3")
+    Send("GET AUTOCEC_FN hdmiout4")
+    Send("GET AUTOCEC_FN hdmiout5")
+    Send("GET AUTOCEC_FN hdmiout6")
+    Send("GET AUTOCEC_FN hdmiout7")
+    Send("GET AUTOCEC_FN hdmiout8")
+    --Send("GET AUDIOSW_M")
   end
 
 
@@ -191,7 +200,7 @@ end
         
         elseif string.find(line, "SW") then
           print ("Switch command response received: " .. line)
-          local input, output = string.match(line, "SW in(%d+) out(%d+)")
+          local input, output = string.match(line, "SW hdmiin(%d+) out(%d+)")
           if input and output then
             output = tonumber(output)
             input = tonumber(input)
@@ -202,7 +211,7 @@ end
 
         elseif string.find(line, "MP") then
           print ("Switch command response received: " .. line)
-          local input, output = string.match(line, "MP in(%d+) out(%d+)")
+          local input, output = string.match(line, "MP HDMIIN(%d+) HDMIOUT(%d+)")
           if input and output then
             output = tonumber(output)
             input = tonumber(input)
@@ -213,7 +222,7 @@ end
 
         elseif string.find(line, "AUDIOMP") then -----precisa verificar se o in e OUT é maiusculo ou minusculo
           print ("Switch Audio MAP response received: " .. line)
-          local input, output = string.match(line, "AUDIOMP in(%d+) lineout(%d+)")
+          local input, output = string.match(line, "AUDIOMP HDMI(%d+) AUDIOOUT(%d+)")
           if input and output then
             output = tonumber(output)
             input = tonumber(input)
@@ -317,7 +326,7 @@ end
   Controls["DevicePort"].String = tostring(Port)
   Controls["DeviceIP"].String = IPAddress
 
-  --PollTimer.EventHandler = PollDevice
+  PollTimer.EventHandler = PollDevice
 
   -- Run at start
   Connect()

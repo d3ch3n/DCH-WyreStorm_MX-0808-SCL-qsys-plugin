@@ -7,7 +7,7 @@
 PluginInfo = {
   Name = "DCH~WyreStorm MX-0808-SCL",
   Version = "1.0",
-  BuildVersion = "1.0.0.210",
+  BuildVersion = "1.0.0.221",
   Id = "1dce4a60-da90-4e31-ac50-97b876900199",
   Author = "Dechen Technology",
   Description = "Control WyreStorm MX-0808-SCL HDMI Matrix Switcher",  
@@ -213,6 +213,7 @@ function GetControls(props)
       PinStyle = "none"
     })
   
+    --[[
     -- Audio Follow Video (radio)
   table.insert(ctrls, {
     Name = "AudioFollowVideo",
@@ -253,7 +254,7 @@ function GetControls(props)
     PinStyle = "Input"
   })
   
-  
+  ]]
   
   -----Presets
   for i = 1, 6 do
@@ -458,7 +459,7 @@ function GetControlLayout(props)
       end
   
   
-  
+      --[[
       layout["AudioFollowVideo"] = {
         PrettyName = "AudioFollowVideo",
         Type = "Button",
@@ -500,6 +501,7 @@ function GetControlLayout(props)
         Legend = "Audio",
         FontSize = 9,
       }
+        ]]
   
   -- Grade de botões (8 Saídas x 8 Entradas)
       for outp = 1, 8 do
@@ -551,7 +553,7 @@ function GetControlLayout(props)
     -- TBD
   elseif CurrentPage == "Presets" then
     
-    for i = 1, 6 do
+    for i = 1, 3 do
     layout["SavePreset"..i] = {
       PrettyName = "Save Preset "..i,
       Type = "Button",
@@ -802,6 +804,7 @@ if Controls then
       if IsConnected() then
         if DebugTx then print("Tx: " .. cmd) end
         TCP:Write(cmd .. "\x0d\x0a")
+        print(cmd .. "\x0d\x0a")
       else
         print("Error - Disconnected; unable to send " .. cmd)
       end
@@ -888,7 +891,15 @@ if Controls then
       if DebugFunction then print("PollDevice() called") end
       --add polling commands here
       Send("GET MP all")
-      Send("GET AUDIOSW_M")
+      Send("GET AUTOCEC_FN hdmiout1")
+      Send("GET AUTOCEC_FN hdmiout2")
+      Send("GET AUTOCEC_FN hdmiout3")
+      Send("GET AUTOCEC_FN hdmiout4")
+      Send("GET AUTOCEC_FN hdmiout5")
+      Send("GET AUTOCEC_FN hdmiout6")
+      Send("GET AUTOCEC_FN hdmiout7")
+      Send("GET AUTOCEC_FN hdmiout8")
+      --Send("GET AUDIOSW_M")
     end
   
   
@@ -940,7 +951,7 @@ if Controls then
           
           elseif string.find(line, "SW") then
             print ("Switch command response received: " .. line)
-            local input, output = string.match(line, "SW in(%d+) out(%d+)")
+            local input, output = string.match(line, "SW hdmiin(%d+) out(%d+)")
             if input and output then
               output = tonumber(output)
               input = tonumber(input)
@@ -951,7 +962,7 @@ if Controls then
   
           elseif string.find(line, "MP") then
             print ("Switch command response received: " .. line)
-            local input, output = string.match(line, "MP in(%d+) out(%d+)")
+            local input, output = string.match(line, "MP HDMIIN(%d+) HDMIOUT(%d+)")
             if input and output then
               output = tonumber(output)
               input = tonumber(input)
@@ -962,7 +973,7 @@ if Controls then
   
           elseif string.find(line, "AUDIOMP") then -----precisa verificar se o in e OUT é maiusculo ou minusculo
             print ("Switch Audio MAP response received: " .. line)
-            local input, output = string.match(line, "AUDIOMP in(%d+) lineout(%d+)")
+            local input, output = string.match(line, "AUDIOMP HDMI(%d+) AUDIOOUT(%d+)")
             if input and output then
               output = tonumber(output)
               input = tonumber(input)
@@ -1066,7 +1077,7 @@ if Controls then
     Controls["DevicePort"].String = tostring(Port)
     Controls["DeviceIP"].String = IPAddress
   
-    --PollTimer.EventHandler = PollDevice
+    PollTimer.EventHandler = PollDevice
   
     -- Run at start
     Connect()
@@ -1080,7 +1091,7 @@ if Controls then
       Controls["Route_"..inp.."_"..outp].EventHandler = function ()
         if DebugFunction then print("Route EventHandler called") end
         if Sw_Mode_AFV or Sw_Video then
-          Send("SET SW in"..inp.." out" .. outp)
+          Send("SET SW hdmiin"..inp.." out" .. outp)
         elseif Sw_Audio then
           Send("SET AUDIOSW IN"..inp.. " OUT" ..outp)
         end
@@ -1088,7 +1099,7 @@ if Controls then
     end
   end
   
-  
+  --[[
   Controls["AudioFollowVideo"].EventHandler = function()
     if DebugFunction then print("Audio Follow Video called") end
     Send ("SET AUDIOSW_M follow")
@@ -1116,8 +1127,9 @@ if Controls then
       Controls["SwVideo"].Boolean = Sw_Video
       Controls["SwAudio"].Boolean = Sw_Audio
   end
+  ]]
   
-  for i = 1, 6 do
+  for i = 1, 3 do
     Controls["SavePreset"..i].EventHandler = function()
       if DebugFunction then print("Saving Preset "..i) end
       Send("SAVE PRESET " .. i)
@@ -1133,24 +1145,24 @@ if Controls then
   for outp=1, 8 do
       Controls["CEC_PWR_OUT"..outp].EventHandler = function(ctrl)
           if ctrl.Boolean then
-              if DebugFunction then print("SET CEC_PWR out"..outp.." on") end
+              if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
               Send("SET CEC_PWR out"..outp.." on")
           else
-              if DebugFunction then print("SET CEC_PWR out"..outp.." off") end
+              if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
               Send("SET CEC_PWR out"..outp.." off")
           end
       end
   
       -- Power ON
       Controls["CEC_PWR_ON_OUT"..outp].EventHandler = function()
-          if DebugFunction then print("SET CEC_PWR out"..outp.." on") end
+          if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
           Send("SET CEC_PWR out"..outp.." on")
           Controls["CEC_PWR_OUT"..outp].Boolean = true
       end
   
       -- Power OFF
       Controls["CEC_PWR_OFF_OUT"..outp].EventHandler = function()
-          if DebugFunction then print("SET CEC_PWR out"..outp.." off") end
+          if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
           Send("SET CEC_PWR out"..outp.." off")
           Controls["CEC_PWR_OUT"..outp].Boolean = false
       end
@@ -1158,10 +1170,10 @@ if Controls then
       -- AutoCEC Power Toggle
       Controls["AUTOCEC_OUT"..outp].EventHandler = function(ctrl)
           if ctrl.Boolean then
-              if DebugFunction then print("SET AUTOCEC_FN out"..outp.." on") end
+              if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." on") end
               Send("SET AUTOCEC_FN out"..outp.." on")
           else
-              if DebugFunction then print("SET AUTOCEC_FN out"..outp.." off") end
+              if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." off") end
               Send("SET AUTOCEC_FN out"..outp.." off")
           end
       end
