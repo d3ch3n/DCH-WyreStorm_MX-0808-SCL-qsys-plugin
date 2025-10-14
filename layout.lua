@@ -135,8 +135,8 @@ elseif CurrentPage == "Switch" then
     for inp = 1, 8 do
       layout["Route_"..inp.."_"..outp] = {
         PrettyName = "Route IN"..inp.." -> OUT"..outp,
-        Type = "Button",
-        ButtonType = "Trigger",
+        Style = "Button",
+        ButtonStyle = "StateTrigger",
         Legend = tostring(inp),
         Position = {100 + (inp-1)*60, 100 + (outp-1)*36},
         Size = {50, 24},
@@ -254,6 +254,7 @@ elseif CurrentPage == "CEC" then
         Color = Colors.Purple
       }
     end
+  --[[
   elseif CurrentPage == "HDCP" then
     -- *** HDCP Layout ***
 
@@ -354,4 +355,5 @@ elseif CurrentPage == "CEC" then
             Color = Colors.Gray
         }
       end
-end
+]]
+    end

@@ -139,7 +139,15 @@ end
   function PollDevice()
     if DebugFunction then print("PollDevice() called") end
     --add polling commands here
-    Send("GET MP all")
+    Send("GET MP hdmiout1")
+    Send("GET MP hdmiout2")
+    Send("GET MP hdmiout3")
+    Send("GET MP hdmiout4")
+    Send("GET MP hdmiout5")
+    Send("GET MP hdmiout6")
+    Send("GET MP hdmiout7")
+    Send("GET MP hdmiout8")
+
     Send("GET AUTOCEC_FN hdmiout1")
     Send("GET AUTOCEC_FN hdmiout2")
     Send("GET AUTOCEC_FN hdmiout3")
@@ -175,7 +183,7 @@ end
         
         -- Process the line here
         -- Example: Check for specific responses and update controls
-       
+        --[[
         if string.find(line, "AUDIOSW_M") then
           local AudioMode = string.match(line, "AUDIOSW_M%s+(%S+)")
           print (AudioMode)
@@ -197,10 +205,10 @@ end
           Controls["SwAudio"].IsInvisible = Sw_Mode_AFV
           Controls["SwVideo"].Boolean = Sw_Video
           Controls["SwAudio"].Boolean = Sw_Audio
-        
-        elseif string.find(line, "SW") then
+        ]]
+        if string.find(line, "SW") then
           print ("Switch command response received: " .. line)
-          local input, output = string.match(line, "SW hdmiin(%d+) out(%d+)")
+          local input, output = string.match(line, "SW HDMIIN(%d+) HDMIOUT(%d+)")
           if input and output then
             output = tonumber(output)
             input = tonumber(input)
@@ -219,7 +227,7 @@ end
             FeedbackColor(input,output)
           end
           PrintOutputRouting()
-
+        --[[
         elseif string.find(line, "AUDIOMP") then -----precisa verificar se o in e OUT é maiusculo ou minusculo
           print ("Switch Audio MAP response received: " .. line)
           local input, output = string.match(line, "AUDIOMP HDMI(%d+) AUDIOOUT(%d+)")
@@ -243,13 +251,13 @@ end
           PrintOutputRouting()
 
           -----------------add new parsing here.
-        
+        ]]
         elseif string.find(line, "CEC_PWR") then
         -- Exemplo: "CEC_PWR out1 on"
-          local outp, state = string.match(line, "CEC_PWR out(%d+) (%a+)")
+          local outp, state = string.match(line, "CEC_PWR HDMIOUT(%d+) (%a+)")
           if outp and state then
             outp = tonumber(outp)
-            local isOn = (state == "on")
+            local isOn = (state == "ON")
 
             -- Atualiza botão toggle
             Controls["CEC_PWR_OUT"..outp].Boolean = isOn
@@ -266,10 +274,10 @@ end
           end
         elseif string.find(line, "AUTOCEC_FN") then
           -- Exemplo: "AUTOCEC_FN out1 on"
-          local outp, state = string.match(line, "AUTOCEC_FN out(%d+) (%a+)")
+          local outp, state = string.match(line, "AUTOCEC_FN hdmiout(%d+) (%a+)")
           if outp and state then
               outp = tonumber(outp)
-              local isOn = (state == "on")
+              local isOn = (state == "ON")
 
               -- Atualiza botão toggle
               Controls["AUTOCEC_OUT"..outp].Boolean = isOn
@@ -278,6 +286,7 @@ end
                   print("AUTOCEC status OUT"..outp.." = "..state)
               end
           end
+          --[[
         elseif string.find(line, "HDCP_S in") then
           local num, state = string.match(line, "HDCP_S in(%d+) (%a+)")
           if num and state then
@@ -293,7 +302,7 @@ end
               local isOn = (state == "on")
               Controls["HDCP_OUT"..num.."_FB"].Boolean = isOn
           end
-
+]]
 
         -- Add more parsing as needed based on device's API responses
         end

@@ -7,11 +7,7 @@ for outp = 1, 8 do
   for inp = 1, 8 do
     Controls["Route_"..inp.."_"..outp].EventHandler = function ()
       if DebugFunction then print("Route EventHandler called") end
-      if Sw_Mode_AFV or Sw_Video then
-        Send("SET SW hdmiin"..inp.." out" .. outp)
-      elseif Sw_Audio then
-        Send("SET AUDIOSW IN"..inp.. " OUT" ..outp)
-      end
+        Send("SET SW hdmiin"..inp.." hdmiout" .. outp)
     end
   end
 end
@@ -63,24 +59,24 @@ for outp=1, 8 do
     Controls["CEC_PWR_OUT"..outp].EventHandler = function(ctrl)
         if ctrl.Boolean then
             if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
-            Send("SET CEC_PWR out"..outp.." on")
+            Send("SET CEC_PWR hdmiout"..outp.." on")
         else
             if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
-            Send("SET CEC_PWR out"..outp.." off")
+            Send("SET CEC_PWR hdmiout"..outp.." off")
         end
     end
 
     -- Power ON
     Controls["CEC_PWR_ON_OUT"..outp].EventHandler = function()
         if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
-        Send("SET CEC_PWR out"..outp.." on")
+        Send("SET CEC_PWR hdmiout"..outp.." on")
         Controls["CEC_PWR_OUT"..outp].Boolean = true
     end
 
     -- Power OFF
     Controls["CEC_PWR_OFF_OUT"..outp].EventHandler = function()
         if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
-        Send("SET CEC_PWR out"..outp.." off")
+        Send("SET CEC_PWR hdmiout"..outp.." off")
         Controls["CEC_PWR_OUT"..outp].Boolean = false
     end
 
@@ -88,14 +84,14 @@ for outp=1, 8 do
     Controls["AUTOCEC_OUT"..outp].EventHandler = function(ctrl)
         if ctrl.Boolean then
             if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." on") end
-            Send("SET AUTOCEC_FN out"..outp.." on")
+            Send("SET AUTOCEC_FN hdmiout"..outp.." on")
         else
             if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." off") end
-            Send("SET AUTOCEC_FN out"..outp.." off")
+            Send("SET AUTOCEC_FN hdmiout"..outp.." off")
         end
     end
 end
-
+--[[
 -- HDCP Controls para Entradas
 for i = 1, 8 do
     Controls["HDCP_IN"..i.."_ON"].EventHandler = function()
@@ -121,3 +117,4 @@ for i = 1, 8 do
         Controls["HDCP_OUT"..i.."_FB"].Boolean = false
     end
 end
+]]

@@ -52,6 +52,7 @@ for outp = 1, 8 do
     table.insert(ctrls, {
       Name = "Route_"..inp.."_"..outp,
       ControlType = "Button",
+      ButtonType = "Trigger",
       Count = 1,
       UserPin = false,
       PinStyle = "none"
@@ -136,7 +137,7 @@ for outp = 1, 8 do
     table.insert(ctrls, {
         Name = "CEC_PWR_OUT"..outp,
         ControlType = "Button",
-        ButtonType = "Momentary",
+        ButtonType = "Toggle",
         Boolean = false  -- Inicialmente desligado
     })
 
@@ -169,7 +170,7 @@ for outp = 1, 8 do
     })
   end
 
-
+--[[
   -- HDCP Inputs
 for inp = 1, 8 do
     -- Botão ON
@@ -230,4 +231,5 @@ for outp = 1, 8 do
         Boolean = false,
         UserPin = false
     })
-end
+        
+end]]

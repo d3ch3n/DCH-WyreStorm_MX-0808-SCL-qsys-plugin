@@ -7,7 +7,7 @@
 PluginInfo = {
   Name = "DCH~WyreStorm MX-0808-SCL",
   Version = "1.0",
-  BuildVersion = "1.0.0.221",
+  BuildVersion = "1.0.0.248",
   Id = "1dce4a60-da90-4e31-ac50-97b876900199",
   Author = "Dechen Technology",
   Description = "Control WyreStorm MX-0808-SCL HDMI Matrix Switcher",  
@@ -71,7 +71,7 @@ function GetPrettyName(props)
 end
 
 -- Optional function used if plugin has multiple pages
-PageNames = { "Setup", "Switch", "Presets", "CEC", "HDCP" }  --List the pages within the plugin
+PageNames = { "Setup", "Switch", "Presets", "CEC" }  --List the pages within the plugin
 function GetPages(props)
   local pages = {}
   for ix,name in ipairs(PageNames) do
@@ -198,6 +198,7 @@ function GetControls(props)
       table.insert(ctrls, {
         Name = "Route_"..inp.."_"..outp,
         ControlType = "Button",
+        ButtonType = "Trigger",
         Count = 1,
         UserPin = false,
         PinStyle = "none"
@@ -282,7 +283,7 @@ function GetControls(props)
       table.insert(ctrls, {
           Name = "CEC_PWR_OUT"..outp,
           ControlType = "Button",
-          ButtonType = "Momentary",
+          ButtonType = "Toggle",
           Boolean = false  -- Inicialmente desligado
       })
   
@@ -315,7 +316,7 @@ function GetControls(props)
       })
     end
   
-  
+  --[[
     -- HDCP Inputs
   for inp = 1, 8 do
       -- Botão ON
@@ -376,7 +377,8 @@ function GetControls(props)
           Boolean = false,
           UserPin = false
       })
-  end
+          
+  end]]
   return ctrls
 end
 
@@ -521,8 +523,8 @@ function GetControlLayout(props)
       for inp = 1, 8 do
         layout["Route_"..inp.."_"..outp] = {
           PrettyName = "Route IN"..inp.." -> OUT"..outp,
-          Type = "Button",
-          ButtonType = "Trigger",
+          Style = "Button",
+          ButtonStyle = "StateTrigger",
           Legend = tostring(inp),
           Position = {100 + (inp-1)*60, 100 + (outp-1)*36},
           Size = {50, 24},
@@ -640,6 +642,7 @@ function GetControlLayout(props)
           Color = Colors.Purple
         }
       end
+    --[[
     elseif CurrentPage == "HDCP" then
       -- *** HDCP Layout ***
   
@@ -740,7 +743,8 @@ function GetControlLayout(props)
               Color = Colors.Gray
           }
         end
-  end
+  ]]
+      end
   return layout, graphics
 end
 
@@ -890,7 +894,15 @@ if Controls then
     function PollDevice()
       if DebugFunction then print("PollDevice() called") end
       --add polling commands here
-      Send("GET MP all")
+      Send("GET MP hdmiout1")
+      Send("GET MP hdmiout2")
+      Send("GET MP hdmiout3")
+      Send("GET MP hdmiout4")
+      Send("GET MP hdmiout5")
+      Send("GET MP hdmiout6")
+      Send("GET MP hdmiout7")
+      Send("GET MP hdmiout8")
+  
       Send("GET AUTOCEC_FN hdmiout1")
       Send("GET AUTOCEC_FN hdmiout2")
       Send("GET AUTOCEC_FN hdmiout3")
@@ -926,7 +938,7 @@ if Controls then
           
           -- Process the line here
           -- Example: Check for specific responses and update controls
-         
+          --[[
           if string.find(line, "AUDIOSW_M") then
             local AudioMode = string.match(line, "AUDIOSW_M%s+(%S+)")
             print (AudioMode)
@@ -948,10 +960,10 @@ if Controls then
             Controls["SwAudio"].IsInvisible = Sw_Mode_AFV
             Controls["SwVideo"].Boolean = Sw_Video
             Controls["SwAudio"].Boolean = Sw_Audio
-          
-          elseif string.find(line, "SW") then
+          ]]
+          if string.find(line, "SW") then
             print ("Switch command response received: " .. line)
-            local input, output = string.match(line, "SW hdmiin(%d+) out(%d+)")
+            local input, output = string.match(line, "SW HDMIIN(%d+) HDMIOUT(%d+)")
             if input and output then
               output = tonumber(output)
               input = tonumber(input)
@@ -970,7 +982,7 @@ if Controls then
               FeedbackColor(input,output)
             end
             PrintOutputRouting()
-  
+          --[[
           elseif string.find(line, "AUDIOMP") then -----precisa verificar se o in e OUT é maiusculo ou minusculo
             print ("Switch Audio MAP response received: " .. line)
             local input, output = string.match(line, "AUDIOMP HDMI(%d+) AUDIOOUT(%d+)")
@@ -994,13 +1006,13 @@ if Controls then
             PrintOutputRouting()
   
             -----------------add new parsing here.
-          
+          ]]
           elseif string.find(line, "CEC_PWR") then
           -- Exemplo: "CEC_PWR out1 on"
-            local outp, state = string.match(line, "CEC_PWR out(%d+) (%a+)")
+            local outp, state = string.match(line, "CEC_PWR HDMIOUT(%d+) (%a+)")
             if outp and state then
               outp = tonumber(outp)
-              local isOn = (state == "on")
+              local isOn = (state == "ON")
   
               -- Atualiza botão toggle
               Controls["CEC_PWR_OUT"..outp].Boolean = isOn
@@ -1017,10 +1029,10 @@ if Controls then
             end
           elseif string.find(line, "AUTOCEC_FN") then
             -- Exemplo: "AUTOCEC_FN out1 on"
-            local outp, state = string.match(line, "AUTOCEC_FN out(%d+) (%a+)")
+            local outp, state = string.match(line, "AUTOCEC_FN hdmiout(%d+) (%a+)")
             if outp and state then
                 outp = tonumber(outp)
-                local isOn = (state == "on")
+                local isOn = (state == "ON")
   
                 -- Atualiza botão toggle
                 Controls["AUTOCEC_OUT"..outp].Boolean = isOn
@@ -1029,6 +1041,7 @@ if Controls then
                     print("AUTOCEC status OUT"..outp.." = "..state)
                 end
             end
+            --[[
           elseif string.find(line, "HDCP_S in") then
             local num, state = string.match(line, "HDCP_S in(%d+) (%a+)")
             if num and state then
@@ -1044,7 +1057,7 @@ if Controls then
                 local isOn = (state == "on")
                 Controls["HDCP_OUT"..num.."_FB"].Boolean = isOn
             end
-  
+  ]]
   
           -- Add more parsing as needed based on device's API responses
           end
@@ -1090,11 +1103,7 @@ if Controls then
     for inp = 1, 8 do
       Controls["Route_"..inp.."_"..outp].EventHandler = function ()
         if DebugFunction then print("Route EventHandler called") end
-        if Sw_Mode_AFV or Sw_Video then
-          Send("SET SW hdmiin"..inp.." out" .. outp)
-        elseif Sw_Audio then
-          Send("SET AUDIOSW IN"..inp.. " OUT" ..outp)
-        end
+          Send("SET SW hdmiin"..inp.." hdmiout" .. outp)
       end
     end
   end
@@ -1146,24 +1155,24 @@ if Controls then
       Controls["CEC_PWR_OUT"..outp].EventHandler = function(ctrl)
           if ctrl.Boolean then
               if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
-              Send("SET CEC_PWR out"..outp.." on")
+              Send("SET CEC_PWR hdmiout"..outp.." on")
           else
               if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
-              Send("SET CEC_PWR out"..outp.." off")
+              Send("SET CEC_PWR hdmiout"..outp.." off")
           end
       end
   
       -- Power ON
       Controls["CEC_PWR_ON_OUT"..outp].EventHandler = function()
           if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." on") end
-          Send("SET CEC_PWR out"..outp.." on")
+          Send("SET CEC_PWR hdmiout"..outp.." on")
           Controls["CEC_PWR_OUT"..outp].Boolean = true
       end
   
       -- Power OFF
       Controls["CEC_PWR_OFF_OUT"..outp].EventHandler = function()
           if DebugFunction then print("SET CEC_PWR hdmiout"..outp.." off") end
-          Send("SET CEC_PWR out"..outp.." off")
+          Send("SET CEC_PWR hdmiout"..outp.." off")
           Controls["CEC_PWR_OUT"..outp].Boolean = false
       end
   
@@ -1171,14 +1180,14 @@ if Controls then
       Controls["AUTOCEC_OUT"..outp].EventHandler = function(ctrl)
           if ctrl.Boolean then
               if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." on") end
-              Send("SET AUTOCEC_FN out"..outp.." on")
+              Send("SET AUTOCEC_FN hdmiout"..outp.." on")
           else
               if DebugFunction then print("SET AUTOCEC_FN hdmiout"..outp.." off") end
-              Send("SET AUTOCEC_FN out"..outp.." off")
+              Send("SET AUTOCEC_FN hdmiout"..outp.." off")
           end
       end
   end
-  
+  --[[
   -- HDCP Controls para Entradas
   for i = 1, 8 do
       Controls["HDCP_IN"..i.."_ON"].EventHandler = function()
@@ -1204,4 +1213,5 @@ if Controls then
           Controls["HDCP_OUT"..i.."_FB"].Boolean = false
       end
   end
+  ]]
 end
