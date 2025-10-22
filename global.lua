@@ -31,7 +31,7 @@ local function GetIPos(qty, rowlen, base, ofs)
 end
 
 function FeedbackColor (input,output)
-    for i = 1, 8 do
+    for i = 0, 8 do
         if i == input then
         Controls["Route_"..i.."_"..output].Color = "Green"
         else

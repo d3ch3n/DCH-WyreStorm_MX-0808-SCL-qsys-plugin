@@ -7,7 +7,7 @@
 PluginInfo = {
   Name = "DCH~WyreStorm MX-0808-SCL",
   Version = "2.0",
-  BuildVersion = "2.0.1.0",
+  BuildVersion = "3.0.0.0",
   Id = "1dce4a60-da90-4e31-ac50-97b876900199",
   Author = "Dechen Technology",
   Description = "Control WyreStorm MX-0808-SCL HDMI Matrix Switcher",  
@@ -48,7 +48,7 @@ local function GetIPos(qty, rowlen, base, ofs)
 end
 
 function FeedbackColor (input,output)
-    for i = 1, 8 do
+    for i = 0, 8 do
         if i == input then
         Controls["Route_"..i.."_"..output].Color = "Green"
         else
@@ -194,7 +194,7 @@ function GetControls(props)
     })
   
     -- Botões de seleção de entrada para cada saída
-    for inp = 1, 8 do
+    for inp = 0, 8 do
       table.insert(ctrls, {
         Name = "Route_"..inp.."_"..outp,
         ControlType = "Button",
@@ -431,11 +431,11 @@ function GetControlLayout(props)
   elseif CurrentPage == "Switch" then
   
     -- Cabeçalho das Entradas
-      for inp = 1, 8 do
+      for inp = 0, 8 do
         table.insert(graphics,{
           Name = "HeaderIN"..inp,
           Type = "Text",
-          Position = {100 + (inp-1)*60, 80},
+          Position = {120 + (inp-1)*60, 80},
           Size = {50, 20},
           FontSize = 12,
           Color = Colors.Black,
@@ -450,7 +450,7 @@ function GetControlLayout(props)
         table.insert(graphics,{
           Name = "LabelOUT"..outp,
           Type = "Text",
-          Position = {40, 100 + (outp-1)*36},
+          Position = {10, 100 + (outp-1)*36},
           Size = {50, 24},
           FontSize = 12,
           Color = Colors.Black,
@@ -511,7 +511,7 @@ function GetControlLayout(props)
         layout["LabelOUT"..outp] = {
           PrettyName = "Label OUT"..outp,
           Type = "Text",
-          Position = {40, 100 + (outp-1)*36},
+          Position = {10, 100 + (outp-1)*36},
           Size = {50, 24},
           FontSize = 12,
           Color = Colors.Black,
@@ -520,13 +520,13 @@ function GetControlLayout(props)
         }
   
     -- Botões de chaveamento (linha da saída)
-      for inp = 1, 8 do
+      for inp = 0, 8 do
         layout["Route_"..inp.."_"..outp] = {
           PrettyName = "Route IN"..inp.." -> OUT"..outp,
           Style = "Button",
           ButtonStyle = "StateTrigger",
           Legend = tostring(inp),
-          Position = {100 + (inp-1)*60, 100 + (outp-1)*36},
+          Position = {120 + (inp-1)*60, 100 + (outp-1)*36},
           Size = {50, 24},
           FontSize = 12,
           HTextAlign = "Center",
@@ -1100,7 +1100,7 @@ if Controls then
   
   
   for outp = 1, 8 do
-    for inp = 1, 8 do
+    for inp = 0, 8 do
       Controls["Route_"..inp.."_"..outp].EventHandler = function ()
         if DebugFunction then print("Route EventHandler called") end
           Send("SET SW hdmiin"..inp.." hdmiout" .. outp)

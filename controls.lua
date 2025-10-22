@@ -48,7 +48,7 @@ for outp = 1, 8 do
   })
 
   -- Botões de seleção de entrada para cada saída
-  for inp = 1, 8 do
+  for inp = 0, 8 do
     table.insert(ctrls, {
       Name = "Route_"..inp.."_"..outp,
       ControlType = "Button",

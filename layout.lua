@@ -43,11 +43,11 @@ if CurrentPage == "Setup" then
 elseif CurrentPage == "Switch" then
 
   -- Cabeçalho das Entradas
-    for inp = 1, 8 do
+    for inp = 0, 8 do
       table.insert(graphics,{
         Name = "HeaderIN"..inp,
         Type = "Text",
-        Position = {100 + (inp-1)*60, 80},
+        Position = {120 + (inp-1)*60, 80},
         Size = {50, 20},
         FontSize = 12,
         Color = Colors.Black,
@@ -62,7 +62,7 @@ elseif CurrentPage == "Switch" then
       table.insert(graphics,{
         Name = "LabelOUT"..outp,
         Type = "Text",
-        Position = {40, 100 + (outp-1)*36},
+        Position = {10, 100 + (outp-1)*36},
         Size = {50, 24},
         FontSize = 12,
         Color = Colors.Black,
@@ -123,7 +123,7 @@ elseif CurrentPage == "Switch" then
       layout["LabelOUT"..outp] = {
         PrettyName = "Label OUT"..outp,
         Type = "Text",
-        Position = {40, 100 + (outp-1)*36},
+        Position = {10, 100 + (outp-1)*36},
         Size = {50, 24},
         FontSize = 12,
         Color = Colors.Black,
@@ -132,13 +132,13 @@ elseif CurrentPage == "Switch" then
       }
 
   -- Botões de chaveamento (linha da saída)
-    for inp = 1, 8 do
+    for inp = 0, 8 do
       layout["Route_"..inp.."_"..outp] = {
         PrettyName = "Route IN"..inp.." -> OUT"..outp,
         Style = "Button",
         ButtonStyle = "StateTrigger",
         Legend = tostring(inp),
-        Position = {100 + (inp-1)*60, 100 + (outp-1)*36},
+        Position = {120 + (inp-1)*60, 100 + (outp-1)*36},
         Size = {50, 24},
         FontSize = 12,
         HTextAlign = "Center",

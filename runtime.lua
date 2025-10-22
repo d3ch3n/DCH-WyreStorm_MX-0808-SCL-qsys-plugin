@@ -4,7 +4,7 @@ end]]
 
 
 for outp = 1, 8 do
-  for inp = 1, 8 do
+  for inp = 0, 8 do
     Controls["Route_"..inp.."_"..outp].EventHandler = function ()
       if DebugFunction then print("Route EventHandler called") end
         Send("SET SW hdmiin"..inp.." hdmiout" .. outp)
